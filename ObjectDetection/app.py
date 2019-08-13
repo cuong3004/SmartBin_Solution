@@ -1,10 +1,15 @@
 import cv2
 import numpy as np
+
 from config import *
+
 from object_detector import ObjectDetect
+from mqtt_service import MqttService
+
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
+import json
 
 from utils import visualization_utils as vis_util
 
@@ -17,6 +22,7 @@ if __name__ == '__main__':
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     object_detector = ObjectDetect()
+    mqtt = MqttService()
 
     # Initialize Picamera and grab reference to the raw capture
     camera = PiCamera()
@@ -48,12 +54,20 @@ if __name__ == '__main__':
 
         cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
         
-#        if len(classes[0]) > 0:
-#            if scores[0][0] > 0.5: 
-#                controller.open_bin(classes[0][0])
-        
+        if len(classes[0]) > 0:
+            if scores[0][0] > 0.5: 
+                data = {
+                    'id': int(classes[0][0]),
+                    'rect': {
+                        'x1': float(boxes[0][0][1]),
+                        'y1': float(boxes[0][0][0]),
+                        'x2': float(boxes[0][0][3]),
+                        'y2': float(boxes[0][0][2])
+                    }
+                }
+                mqtt.publish(OBJECT_DETECT_TOPIC, json.dumps(data))        
         # All the results have been drawn on the frame, so it's time to display it.
-        cv2.imshow('Object detector', frame)
+        # cv2.imshow('Object detector', frame)
         t2 = cv2.getTickCount()
         time1 = (t2-t1)/freq
         frame_rate_calc = 1/time1
