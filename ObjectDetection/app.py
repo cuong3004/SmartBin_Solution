@@ -46,6 +46,8 @@ if __name__ == '__main__':
         frame = np.copy(frame1.array)
         frame.setflags(write=1)
         
+        frame = frame[:, int(IM_WIDTH*0.05):int(IM_WIDTH*0.775)]
+        
         (boxes, scores, classes, num) = object_detector.detect(frame)
         
         # Draw the results of the detection (aka 'visulaize the results')
