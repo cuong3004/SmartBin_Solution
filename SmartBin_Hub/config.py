@@ -1,3 +1,9 @@
+BROCKER_ADDRESS = 'localhost'
+
+OBJECT_DETECT_TOPIC = "/object"
+
+ROBOT_STATUS = "/status"
+
 SERVO1 = 12
 SERVO2 = 19
 SERVO3 = 18
