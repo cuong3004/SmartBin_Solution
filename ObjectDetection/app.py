@@ -5,6 +5,7 @@ from config import *
 
 from object_detector import ObjectDetect
 from mqtt_service import MqttService
+from lcd import PCD8544
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -13,7 +14,12 @@ import json
 
 from utils import visualization_utils as vis_util
 
+robot_status = 'ready'
 
+def on_mqtt_message(client, userdata, message):
+    global robot_status
+    status = str(message.payload.decode("utf-8"))
+    robot_status = status
 
 if __name__ == '__main__':
     # Initialize frame rate calculation
@@ -23,6 +29,7 @@ if __name__ == '__main__':
 
     object_detector = ObjectDetect()
     mqtt = MqttService()
+    lcd = PCD8544()
 
     # Initialize Picamera and grab reference to the raw capture
     camera = PiCamera()
@@ -65,9 +72,26 @@ if __name__ == '__main__':
                         'y2': float(boxes[0][0][2])
                     }
                 }
-                mqtt.publish(OBJECT_DETECT_TOPIC, json.dumps(data))        
-        # All the results have been drawn on the frame, so it's time to display it.
-        # cv2.imshow('Object detector', frame)
+
+                if int(classes[0][0]) == 1:
+                    lcd.draw_text("Bottle", (30, 20))    
+                elif int(classes[0][0]) == 2:
+                    lcd.draw_text("Nylon", (30, 20)) 
+                else:
+                    lcd.draw_text("Scrap Paper", (10, 20))   
+
+                mqtt.publish(OBJECT_DETECT_TOPIC, json.dumps(data)) 
+
+            else:
+                lcd.draw_text(" ", (10, 20))  
+                data = {
+                    'id': 0
+                }
+
+                mqtt.publish(OBJECT_DETECT_TOPIC, json.dumps(data))                
+
+        # All the results have been drawn on the frame, so it's time to display
+        cv2.imshow('Object detector', frame)
         t2 = cv2.getTickCount()
         time1 = (t2-t1)/freq
         frame_rate_calc = 1/time1

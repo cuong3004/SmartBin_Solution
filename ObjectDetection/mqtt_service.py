@@ -9,3 +9,7 @@ class MqttService:
 
     def publish(self, topic, data):
         self.client.publish(topic, data)
+
+    def subscribe(self, func):
+        self.client.subscribe(ROBOT_STATUS)
+        self.client.on_message = func
