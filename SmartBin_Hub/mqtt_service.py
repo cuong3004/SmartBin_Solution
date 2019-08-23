@@ -5,7 +5,7 @@ class MqttService:
 
     def __init__(self):
         self.client = mqtt.Client("P")
-        self.client.connect(BROCKER_ADDRESS)        
+        self.client.connect(BROCKER_ADDRESS)
 
     def subscribe(self, func):
         self.client.subscribe(OBJECT_DETECT_TOPIC)
