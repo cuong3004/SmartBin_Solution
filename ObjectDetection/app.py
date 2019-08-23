@@ -45,8 +45,8 @@ if __name__ == '__main__':
         # i.e. a single-column array, where each item in the column has the pixel RGB value
         frame = np.copy(frame1.array)
         frame.setflags(write=1)
-        
-        frame = frame[:, int(IM_WIDTH*0.05):int(IM_WIDTH*0.775)]
+
+        frame = frame[150:, 150:-50]
         
         (boxes, scores, classes, num) = object_detector.detect(frame)
         

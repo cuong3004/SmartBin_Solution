@@ -14,7 +14,7 @@ from config import *
 class PCD8544:
 
     def __init__(self):
-        self.disp = LCD.PCD8544(DC, RST, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=4000000))
+        self.disp = LCD.PCD8544(DC, RST, SCLK, DIN, CE)
         self.disp.begin(contrast=CONTRAST)
 
         self.disp.clear()
@@ -25,12 +25,6 @@ class PCD8544:
 
         # Get drawing object to draw on image.
         self.draw = ImageDraw.Draw(self.image)
-
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        GPIO.setup(NOKIA_BL, GPIO.OUT)
-
-        GPIO.output(NOKIA_BL, GPIO.HIGH)
 
     def draw_text(self, text, position):
         # Draw a white filled box to clear the image.
