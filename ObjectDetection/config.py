@@ -21,12 +21,13 @@ PATH_TO_LABELS = os.path.join(CWD_PATH,'data','labelmap.pbtxt')
 
 NUM_CLASSES = 3
 
-DC = 23
-RST = 24
-SPI_PORT = 0
-SPI_DEVICE = 0
+CE = 16
+DC = 13
+RST = 26
+SCLK = 5
+DIN = 6
 
-CONTRAST = 45
+CONTRAST = 60
 
 NOKIA_BL = 0
 
