@@ -9,6 +9,8 @@ class NRF24L01:
         self.radio.begin()
         self.radio.enableDynamicPayloads()
         self.radio.setRetries(5,15)
+        self.radio.enableAckPayload()
+        self.radio.setDataRate(RF24_250KBPS)
 
         self.radio.openWritingPipe(NRF24_ADDRESS)
 

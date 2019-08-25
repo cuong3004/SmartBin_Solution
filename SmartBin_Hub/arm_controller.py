@@ -34,11 +34,19 @@ class ArmController:
         
         self._setGpio(SERVO3, self.angle2Pulse(servo2Angle), step=20)
         self._setGpio(SERVO2, self.angle2Pulse(servo1Angle), step=20)
+        
             
     def pick(self, id, rect):
         distance = -333.333 * (rect['x1'] + rect['x2']) / 2 + 396.666
         if distance < 18:
             return
+        
+        a = distance - 85
+        b = 30 - 80
+        
+        if -pow(a, 4) - 2*pow(a, 2)*pow(b, 2) + 79668*pow(a, 2) - pow(b, 4) +79668 * pow(b, 2) - 11451456 < 0:
+            return
+        
         self._setGpio(SERVO1, 2400, step=20)
         self._setGpio(SERVO4, 2000, False)
         self._setGpio(SERVO2, 800, step=20)
@@ -54,8 +62,8 @@ class ArmController:
         self._setGpio(SERVO4, 800, False, release=False)
         
         sleep(0.5)
-        self.moveArmTo(distance, 200)
-        self._setGpio(SERVO2, 800, step=20)
+        self._setGpio(SERVO2, 700, step=20)
+        self._setGpio(SERVO3, 1750, step=20)
         
             
     def originState(self, smooth = True):
