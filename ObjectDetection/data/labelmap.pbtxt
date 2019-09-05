@@ -12,3 +12,8 @@ item {
   id: 3
   name: 'scrap paper'
 }
+
+item {
+  id: 4
+  name: 'hand'
+}
