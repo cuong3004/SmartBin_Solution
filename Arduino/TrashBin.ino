@@ -4,7 +4,9 @@
 #include "RF24.h"
 
 // Device id
-const int TRASHBIN_ID = 3;
+const int TRASHBIN_ID = 1;
+const int CLOSE_ANGLE = 12; // 12, 28, 48
+const int OPEN_ANGLE = CLOSE_ANGLE + 90;
 
 // Hardware configuration
 RF24 radio(9, 10);
@@ -16,6 +18,29 @@ const uint64_t address = 0xF0F0F0F0D2;
 
 const int MAX_PAYLOAD_SIZE = 32;
 char payload[MAX_PAYLOAD_SIZE + 1];
+
+int currentAngle = CLOSE_ANGLE;
+
+void setServo(int angle)
+{
+  if (angle == CLOSE_ANGLE && currentAngle == OPEN_ANGLE)
+  {
+     for (int i = OPEN_ANGLE; i > CLOSE_ANGLE; i -= 10)
+     {
+        servo.write(i);
+        delay(20);
+     }
+  }
+  if (angle == OPEN_ANGLE && currentAngle == CLOSE_ANGLE)
+  {
+     for (int i = CLOSE_ANGLE; i < OPEN_ANGLE; i += 10)
+     {
+        servo.write(i);
+        delay(20);
+     }
+  }
+  currentAngle = angle;
+}
 
 int byteArrayToInt(char* arr, int len)
 {
@@ -37,7 +62,7 @@ void setup(void)
   Serial.begin(115200);
 
   servo.attach(3);
-  servo.write(90);
+  servo.write(CLOSE_ANGLE);
 
   Serial.println("Start:");
 
@@ -69,9 +94,9 @@ void loop(void)
     if (byteToInt(payload[0]) == TRASHBIN_ID)
     {
       if (byteToInt(payload[1]) == 1) {
-        servo.write(0);
+        setServo(OPEN_ANGLE);
       } else {
-        servo.write(90);
+        setServo(CLOSE_ANGLE);
       }
     }
   }
