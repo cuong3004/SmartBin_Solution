@@ -64,7 +64,7 @@ if __name__ == '__main__':
         cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
         
         if len(classes[0]) > 0:
-            if scores[0][0] > 0.5: 
+            if scores[0][0] > 0.5:
                 data = {
                     'id': int(classes[0][0]),
                     'rect': {
@@ -81,8 +81,16 @@ if __name__ == '__main__':
                     lcd.draw_text("Nylon", (30, 20)) 
                 else:
                     lcd.draw_text("Scrap Paper", (10, 20))   
-
-                mqtt.publish(OBJECT_DETECT_TOPIC, json.dumps(data)) 
+                check = True
+                for i in range(5):
+                    if scores[0][i] < 0.5:
+                        check = False
+                        break
+                    if int(classes[0][0]) == 4:
+                        check = False
+                        break
+                if check:
+                    mqtt.publish(OBJECT_DETECT_TOPIC, json.dumps(data)) 
 
             else:
                 lcd.draw_text(" ", (10, 20))  
