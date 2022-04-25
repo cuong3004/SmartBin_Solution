@@ -15,7 +15,7 @@ class ArmController:
         self.servoPos[str(SERVO3)] = 0
         self.servoPos[str(SERVO4)] = 0
         
-        self.originState(False)
+        self.originState(True)
         
     def pulse2Angle(self, pulse):
         return -0.1 * pulse + 240
